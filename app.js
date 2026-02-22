@@ -37,6 +37,20 @@ closeRegister.addEventListener('click', () => {
     loginModal.classList.add('hidden');
 });
 
+// Changing Header
+
+function updateHeader() {
+
+    if (isLoggedIn()) {
+
+        openLogin.classList.add('hidden');
+        openRegister.classList.add('hidden');
+    } else {
+
+        return;
+    }
+}
+
 // Submit login form
 
 loginForm.addEventListener('submit', async (event) => {
@@ -90,3 +104,14 @@ async function doLogin(credentials) {
         return null;
     }
 }
+
+// Checks User Credentials
+
+function isLoggedIn() {
+
+    const credential = localStorage.getItem('LibraryCredential');
+
+    return credential != null;
+}
+
+updateHeader();
