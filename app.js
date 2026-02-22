@@ -1,7 +1,9 @@
 
 const loginModal = document.getElementById('login-modal');
 const registerModal = document.getElementById('register-modal');
+
 const loginForm = document.getElementById('login-form');
+const registerForm = document.getElementById('register-form');
 
 const openLogin = document.getElementById('btn-open-login');
 const closeLogin = document.getElementById('btn-close-login');
@@ -77,7 +79,7 @@ loginForm.addEventListener('submit', async (event) => {
 
         localStorage.setItem('LibraryCredential', base64Credentials);
 
-        location.reload();
+        updateHeader();
     }
 });
 
@@ -86,6 +88,34 @@ loginForm.addEventListener('submit', async (event) => {
 logoutBtn.addEventListener('click', () => {
 
     logout();
+});
+
+// Submit register form
+
+registerForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const nameInput = document.getElementById('register-name').value;
+    const emailInput = document.getElementById('register-email').value;
+    const passwordInput = document.getElementById('register-password').value;
+
+    const request = JSON.stringify({
+        name: nameInput,
+        email: emailInput,
+        password: passwordInput
+    });
+
+    const response = await doRegister(request);
+
+    if (response != null) {
+
+        alert('Novo usuário Registrado!');
+
+        registerForm.reset();
+
+        registerModal.classList.add('hidden');
+        loginModal.classList.remove('hidden');
+    }
 });
 
 // Execute Login
@@ -127,6 +157,38 @@ function logout() {
         localStorage.removeItem('LibraryCredential');
 
         location.reload();
+    }
+}
+
+// Execute Register
+
+async function doRegister(jsonRequest) {
+
+    try {
+        
+        const response = await fetch('http://localhost:8080/users/register', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: jsonRequest
+        });
+
+        if (response.status != 201) {
+
+            throw new Error("Informações Inválidas.")
+        }
+
+        const dados = await response.json();
+        
+        return dados;
+
+    } catch (error) {
+        
+        alert(error);
+        console.log("Erro! Registro encontrou algum problema, observe: " + error);
+
+        return null;
     }
 }
 
