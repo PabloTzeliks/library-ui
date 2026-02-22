@@ -1,5 +1,6 @@
 
 const loginModal = document.getElementById('login-modal');
+const registerModal = document.getElementById('register-modal');
 const loginForm = document.getElementById('login-form');
 
 const openLogin = document.getElementById('btn-open-login');
@@ -8,6 +9,7 @@ const submitLogin = document.getElementById('btn-submit-login');
 
 const openRegister = document.getElementById('btn-open-register');
 const closeRegister = document.getElementById('btn-close-register');
+const logoutBtn = document.getElementById('btn-logout');
 const submitRegister = document.getElementById('btn-submit-register');
 
 // Open login modal
@@ -27,14 +29,14 @@ closeLogin.addEventListener('click', () => {
 // Open register modal
 
 openRegister.addEventListener('click', () => {
-    loginModal.classList.remove('hidden');
+    registerModal.classList.remove('hidden');
 
 });
 
 // Close register modal
 
 closeRegister.addEventListener('click', () => {
-    loginModal.classList.add('hidden');
+    registerModal.classList.add('hidden');
 });
 
 // Changing Header
@@ -45,6 +47,8 @@ function updateHeader() {
 
         openLogin.classList.add('hidden');
         openRegister.classList.add('hidden');
+
+        logoutBtn.classList.remove('hidden');
     } else {
 
         return;
@@ -72,7 +76,16 @@ loginForm.addEventListener('submit', async (event) => {
         alert(`Bem vindo ${userData.name}!`)
 
         localStorage.setItem('LibraryCredential', base64Credentials);
+
+        location.reload();
     }
+});
+
+// Touch logoutBtn
+
+logoutBtn.addEventListener('click', () => {
+
+    logout();
 });
 
 // Execute Login
@@ -102,6 +115,18 @@ async function doLogin(credentials) {
         console.log("Erro! Algo deu errado ao tentar o Login, observe: " + error);
         
         return null;
+    }
+}
+
+// logoutBtn
+
+function logout() {
+
+    if (isLoggedIn()) {
+
+        localStorage.removeItem('LibraryCredential');
+
+        location.reload();
     }
 }
 
