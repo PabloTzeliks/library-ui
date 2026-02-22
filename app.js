@@ -39,11 +39,41 @@ closeRegister.addEventListener('click', () => {
 
 // Submit login form
 
-loginForm.addEventListener('submit', (event) => {
+loginForm.addEventListener('submit', async (event) => {
     
     event.preventDefault();
 
     // Get the form data
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
+
+    const base64Credentials = btoa(`${email}:${password}`);
+
+    const userData = await doLogin(base64Credentials);
 });
+
+// Execute Login
+
+async function doLogin(credentials) {
+
+    fetch('http://localhost:8080/users/login', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${credentials}`
+        }
+    })
+    .then(response => {
+        
+        if (response.ok) {
+
+            return response.json();
+        } else {
+
+            throw new Error("Credenciais Inválidas.")
+        }
+    })
+    .catch(error => {
+        console.log("Erro, sistema fora do ar.");
+    })
+}
