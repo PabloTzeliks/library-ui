@@ -80,6 +80,10 @@ loginForm.addEventListener('submit', async (event) => {
         localStorage.setItem('LibraryCredential', base64Credentials);
 
         updateHeader();
+    } else {
+
+        setInputError('login-email', 'Verifique seu e-mail.');
+        setInputError('login-password', 'Senha Incorreta.');
     }
 });
 
@@ -115,6 +119,11 @@ registerForm.addEventListener('submit', async (event) => {
 
         registerModal.classList.add('hidden');
         loginModal.classList.remove('hidden');
+    } else {
+
+        setInputError('register-name', 'Nome inválido.');
+        setInputError('register-email', 'E-mail inválido.');
+        setInputError('register-password', 'Senha inválida.');
     }
 });
 
@@ -130,25 +139,20 @@ async function doLogin(credentials) {
             "Authorization": `Basic ${credentials}`
         }});
 
-        if (!response.ok) {
-
-            throw new Error("Credenciais Inválidas.")
-        }
+        if (!response.ok) return null;
 
         const dados = await response.json();
 
         return dados;
         
     } catch (error) {
-        
-        alert(error);
         console.log("Erro! Algo deu errado ao tentar o Login, observe: " + error);
         
         return null;
     }
 }
 
-// logoutBtn
+// logout
 
 function logout() {
 
@@ -174,18 +178,13 @@ async function doRegister(jsonRequest) {
             body: jsonRequest
         });
 
-        if (response.status != 201) {
-
-            throw new Error("Informações Inválidas.")
-        }
+        if (response.status != 201) return null;
 
         const dados = await response.json();
         
         return dados;
 
     } catch (error) {
-        
-        alert(error);
         console.log("Erro! Registro encontrou algum problema, observe: " + error);
 
         return null;
@@ -200,5 +199,48 @@ function isLoggedIn() {
 
     return credential != null;
 }
+
+// Input Error
+
+function setInputError(id, message) {
+    const input = document.getElementById(id);
+    const errorText = document.getElementById(`error-${id}`);
+    
+    // Adiciona borda vermelha e sombra de erro do Tailwind
+    input.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+    input.classList.remove('border-gray-200', 'focus:ring-blue-900');
+    
+    if (errorText) {
+        errorText.innerText = message;
+        errorText.classList.remove('hidden');
+    }
+}
+
+function clearErrors(formId) {
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll('input');
+    const errors = form.querySelectorAll('p[id^="error-"]');
+    
+    inputs.forEach(input => {
+        input.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+        input.classList.add('border-gray-200');
+    });
+    
+    errors.forEach(error => error.classList.add('hidden'));
+}
+
+function setupInputListeners(formId) {
+    const form = document.getElementById(formId);
+    const inputs = form.querySelectorAll('input');
+
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            clearErrors(formId);
+        });
+    });
+}
+
+setupInputListeners('login-form');
+setupInputListeners('register-form');
 
 updateHeader();
