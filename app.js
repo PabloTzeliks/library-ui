@@ -50,30 +50,43 @@ loginForm.addEventListener('submit', async (event) => {
     const base64Credentials = btoa(`${email}:${password}`);
 
     const userData = await doLogin(base64Credentials);
+
+    if (userData != null) {
+
+        loginModal.classList.add('hidden');
+
+        alert(`Bem vindo ${userData.name}!`)
+
+        localStorage.setItem('LibraryCredential', base64Credentials);
+    }
 });
 
 // Execute Login
 
 async function doLogin(credentials) {
 
-    fetch('http://localhost:8080/users/login', {
+    try {
+        const response = await fetch('http://localhost:8080/users/login', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Basic ${credentials}`
-        }
-    })
-    .then(response => {
-        
-        if (response.ok) {
+        }});
 
-            return response.json();
-        } else {
+        if (!response.ok) {
 
             throw new Error("Credenciais Inválidas.")
         }
-    })
-    .catch(error => {
-        console.log("Erro, sistema fora do ar.");
-    })
+
+        const dados = await response.json();
+
+        return dados;
+        
+    } catch (error) {
+        
+        alert(error);
+        console.log("Erro! Algo deu errado ao tentar o Login, observe: " + error);
+        
+        return null;
+    }
 }
