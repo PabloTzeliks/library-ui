@@ -13,46 +13,38 @@ const openRegister = document.getElementById('btn-open-register');
 const closeRegister = document.getElementById('btn-close-register');
 const submitRegister = document.getElementById('btn-submit-register');
 
+const logoutBtn = document.getElementById('btn-logout');
+
 // Open login modal
 
-openLogin.addEventListener('click', () => {
+openLogin?.addEventListener('click', () => {
 
     loginModal.classList.remove('hidden');
 });
 
 // Close login modal
 
-closeLogin.addEventListener('click', () => {
+closeLogin?.addEventListener('click', () => {
 
     loginModal.classList.add('hidden');
 });
 
 // Open register modal
 
-openRegister.addEventListener('click', () => {
+openRegister?.addEventListener('click', () => {
     registerModal.classList.remove('hidden');
 
 });
 
 // Close register modal
 
-closeRegister.addEventListener('click', () => {
+closeRegister?.addEventListener('click', () => {
     registerModal.classList.add('hidden');
 });
 
-// Changing Header
-
-function updateHeader() {
-
-    if (isLoggedIn()) {
-
-        window.location.href = 'bookcase.html';
-    }
-}
-
 // Submit login form
 
-loginForm.addEventListener('submit', async (event) => {
+loginForm?.addEventListener('submit', async (event) => {
     
     event.preventDefault();
 
@@ -82,14 +74,14 @@ loginForm.addEventListener('submit', async (event) => {
 
 // Touch logoutBtn
 
-logoutBtn.addEventListener('click', () => {
+logoutBtn?.addEventListener('click', () => {
 
-    logout();
+    doLogout();
 });
 
 // Submit register form
 
-registerForm.addEventListener('submit', async (event) => {
+registerForm?.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const nameInput = document.getElementById('register-name').value;
@@ -147,13 +139,13 @@ async function doLogin(credentials) {
 
 // logout
 
-function logout() {
+function doLogout() {
 
     if (isLoggedIn()) {
 
         localStorage.removeItem('LibraryCredential');
 
-        location.reload();
+        window.location.href = 'index.html';
     }
 }
 
@@ -181,6 +173,16 @@ async function doRegister(jsonRequest) {
         console.log("Erro! Registro encontrou algum problema, observe: " + error);
 
         return null;
+    }
+}
+
+// Changing Header
+
+function updateHeader() {
+
+    if (isLoggedIn()) {
+
+        window.location.href = 'bookcase.html';
     }
 }
 

@@ -1,84 +1,155 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minha Estante - Library System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+    <header
+      class="bg-white border-b border-gray-200 py-3 px-8 sticky top-0 z-40 shadow-sm flex justify-between items-center"
+    >
+      <div
+        class="flex items-center gap-2 text-blue-900 font-semibold text-lg cursor-pointer"
+      >
+        <i class="ph ph-book-open text-2xl"></i>
+        <span class="hidden sm:inline">Library System</span>
+      </div>
 
-    <header class="bg-white border-b border-gray-200 py-3 px-8 sticky top-0 z-40 shadow-sm flex justify-between items-center">
-        <div class="flex items-center gap-2 text-blue-900 font-semibold text-lg cursor-pointer">
-            <i class="ph ph-book-open text-2xl"></i>
-            <span class="hidden sm:inline">Library System</span>
+      <div class="max-w-md w-full mx-4 relative">
+        <div
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        >
+          <i class="ph ph-magnifying-glass text-gray-400 text-lg"></i>
         </div>
+        <input
+          type="text"
+          id="search-google-input"
+          class="w-full pl-10 pr-4 py-2 bg-gray-100 border-transparent rounded-full focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+          placeholder="Buscar livros, autores..."
+        />
+      </div>
 
-        <div class="max-w-md w-full mx-4 relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i class="ph ph-magnifying-glass text-gray-400 text-lg"></i>
-            </div>
-            <input type="text" id="search-google-input" 
-                class="w-full pl-10 pr-4 py-2 bg-gray-100 border-transparent rounded-full focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none" 
-                placeholder="Buscar livros, autores...">
-        </div>
-
-        <div class="flex items-center gap-4">
-            <span class="text-sm font-medium text-gray-600 hidden md:inline" id="user-greeting">Olá, Leitor</span>
-            <button id="btn-logout" class="text-gray-500 hover:text-red-600 transition-colors" title="Sair">
-                <i class="ph ph-sign-out text-2xl"></i>
-            </button>
-        </div>
+      <div class="flex items-center gap-4">
+        <span
+          class="text-sm font-medium text-gray-600 hidden md:inline"
+          id="user-greeting"
+          >Olá, Leitor</span
+        >
+        <button
+          id="btn-logout"
+          class="text-gray-500 hover:text-red-600 transition-colors"
+          title="Sair"
+        >
+          <i class="ph ph-sign-out text-2xl"></i>
+        </button>
+      </div>
     </header>
 
     <main class="flex-grow container mx-auto px-4 sm:px-8 py-8">
-        
-        <div class="flex flex-col md:flex-row justify-between items-baseline mb-8 gap-4">
-            <h1 class="text-3xl font-serif text-blue-950">Sua Estante</h1>
-            
-            <div class="flex gap-2 text-sm font-medium border-b border-gray-200 pb-1">
-                <button class="px-3 text-blue-900 border-b-2 border-blue-900">Todos</button>
-                <button class="px-3 text-gray-500 hover:text-blue-900 transition-colors">Lendo</button>
-                <button class="px-3 text-gray-500 hover:text-blue-900 transition-colors">Lidos</button>
-                <button class="px-3 text-gray-500 hover:text-blue-900 transition-colors">Quero Ler</button>
-            </div>
+      <div
+        class="flex flex-col md:flex-row justify-between items-baseline mb-8 gap-4"
+      >
+        <h1 class="text-3xl font-serif text-blue-950">Sua Estante</h1>
+
+        <div
+          id="filter-tabs"
+          class="flex gap-2 text-sm font-medium border-b border-gray-200 pb-1"
+        >
+          <button
+            data-status="ALL"
+            class="filter-btn px-3 text-blue-900 border-b-2 border-blue-900 transition-colors"
+          >
+            Todos
+          </button>
+          <button
+            data-status="LENDO"
+            class="filter-btn px-3 text-gray-500 border-b-2 border-transparent hover:text-blue-900 transition-colors"
+          >
+            Lendo
+          </button>
+          <button
+            data-status="LIDO"
+            class="filter-btn px-3 text-gray-500 border-b-2 border-transparent hover:text-blue-900 transition-colors"
+          >
+            Lidos
+          </button>
+          <button
+            data-status="QUERO_LER"
+            class="filter-btn px-3 text-gray-500 border-b-2 border-transparent hover:text-blue-900 transition-colors"
+          >
+            Quero Ler
+          </button>
         </div>
+      </div>
 
-        <div id="bookcase-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col group cursor-pointer border border-gray-100">
-                <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
-                    <img src="https://books.google.com/books/content?id=y9r9DwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" alt="Capa do Livro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                    <span class="absolute top-2 right-2 bg-blue-900 text-white text-xs font-bold px-2 py-1 rounded-md shadow">Lendo</span>
-                </div>
-                <div class="p-4 flex flex-col flex-grow">
-                    <h3 class="font-semibold text-gray-800 line-clamp-2 leading-tight mb-1">O Senhor dos Anéis: A Sociedade do Anel</h3>
-                    <p class="text-sm text-gray-500 mb-3 line-clamp-1">J.R.R. Tolkien</p>
-                    
-                    <div class="mt-auto flex text-yellow-400 text-sm">
-                        <i class="ph-fill ph-star"></i>
-                        <i class="ph-fill ph-star"></i>
-                        <i class="ph-fill ph-star"></i>
-                        <i class="ph-fill ph-star"></i>
-                        <i class="ph ph-star text-gray-300"></i>
-                    </div>
-                </div>
-            </div>
+      <div
+        id="bookcase-grid"
+        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+      >
+        <div
+          class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col group cursor-pointer border border-gray-100"
+        >
+          <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
+            <img
+              src="https://books.google.com/books/content?id=y9r9DwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+              alt="Capa do Livro"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <span
+              class="absolute top-2 right-2 bg-blue-900 text-white text-xs font-bold px-2 py-1 rounded-md shadow"
+              >Lendo</span
+            >
+          </div>
+          <div class="p-4 flex flex-col flex-grow">
+            <h3
+              class="font-semibold text-gray-800 line-clamp-2 leading-tight mb-1"
+            >
+              O Senhor dos Anéis: A Sociedade do Anel
+            </h3>
+            <p class="text-sm text-gray-500 mb-3 line-clamp-1">
+              J.R.R. Tolkien
+            </p>
 
+            <div class="mt-auto flex text-yellow-400 text-sm">
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph-fill ph-star"></i>
+              <i class="ph ph-star text-gray-300"></i>
             </div>
+          </div>
+        </div>
+      </div>
     </main>
 
-    <div id="search-results-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-50 flex justify-center items-start pt-20">
-        <div class="bg-white w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
-            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                <h2 class="font-semibold text-blue-950">Resultados da busca...</h2>
-                <button id="btn-close-search" class="text-gray-400 hover:text-gray-700"><i class="ph ph-x text-xl"></i></button>
-            </div>
-            <div id="search-results-list" class="p-4 overflow-y-auto flex flex-col gap-4">
-                </div>
+    <div
+      id="search-results-modal"
+      class="hidden fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-50 flex justify-center items-start pt-20"
+    >
+      <div
+        class="bg-white w-full max-w-3xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+      >
+        <div
+          class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50"
+        >
+          <h2 class="font-semibold text-blue-950">Resultados da busca...</h2>
+          <button
+            id="btn-close-search"
+            class="text-gray-400 hover:text-gray-700"
+          >
+            <i class="ph ph-x text-xl"></i>
+          </button>
         </div>
+        <div
+          id="search-results-list"
+          class="p-4 overflow-y-auto flex flex-col gap-4"
+        ></div>
+      </div>
     </div>
 
-</body>
+    <script src="js/auth.js"></script>
+  </body>
 </html>
