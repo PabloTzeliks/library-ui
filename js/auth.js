@@ -46,10 +46,7 @@ function updateHeader() {
 
     if (isLoggedIn()) {
 
-        window.location.href('/bookcase.html');
-    } else {
-
-        return;
+        window.location.href = 'bookcase.html';
     }
 }
 
