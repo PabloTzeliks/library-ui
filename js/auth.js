@@ -11,7 +11,6 @@ const submitLogin = document.getElementById('btn-submit-login');
 
 const openRegister = document.getElementById('btn-open-register');
 const closeRegister = document.getElementById('btn-close-register');
-const logoutBtn = document.getElementById('btn-logout');
 const submitRegister = document.getElementById('btn-submit-register');
 
 // Open login modal
@@ -47,10 +46,7 @@ function updateHeader() {
 
     if (isLoggedIn()) {
 
-        openLogin.classList.add('hidden');
-        openRegister.classList.add('hidden');
-
-        logoutBtn.classList.remove('hidden');
+        window.location.href('/bookcase.html');
     } else {
 
         return;
