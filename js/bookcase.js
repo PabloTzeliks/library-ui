@@ -1,6 +1,30 @@
 
 const filterButtons = document.querySelectorAll('.filter-btn');
 
+const searchInput = document.getElementById('search-google-input');
+const searchModal = document.getElementById('search-results-modal');
+const searchResultsList = document.getElementById('search-results-list');
+const closeSearchBtn = document.getElementById('btn-close-search');
+
+// Search
+
+closeSearchBtn?.addEventListener('click', () => {
+
+    searchModal.classList.add('hidden');
+    searchInput.value = '';
+})
+
+searchInput?.addEventListener('keypress', async (event) {
+    
+    if (event.key === 'Enter') {
+        const query = searchInput.value.trim();
+
+        if (query.length > 0) {
+            await doGoogleBooksSearch(query); 
+        }
+    }
+})
+
 // Change Status Type
 
 filterButtons.forEach(btn => {
