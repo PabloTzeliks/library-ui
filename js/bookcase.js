@@ -11,9 +11,11 @@ filterButtons.forEach(btn => {
 
         updateTabStatus(clickedButton);
 
-
+        filterBooks(status);
     })
 })
+
+// Update colors and border of each clicked status section
 
 function updateTabStatus(activeButton) {
     
@@ -26,6 +28,8 @@ function updateTabStatus(activeButton) {
     activeButton.classList.remove('text-gray-500', 'border-transparent')
     activeButton.classList.add('text-blue-900', 'border-blue-900')
 }
+
+// Filter books from API by their Status
 
 async function filterBooks(status) {
     
