@@ -14,7 +14,7 @@ closeSearchBtn?.addEventListener('click', () => {
     searchInput.value = '';
 })
 
-searchInput?.addEventListener('keypress', async (event) {
+searchInput?.addEventListener('keypress', async (event) => {
     
     if (event.key === 'Enter') {
         const query = searchInput.value.trim();
@@ -51,6 +51,34 @@ function updateTabStatus(activeButton) {
 
     activeButton.classList.remove('text-gray-500', 'border-transparent')
     activeButton.classList.add('text-blue-900', 'border-blue-900')
+}
+
+// Search books from Google Books API
+
+async function doGoogleBooksSearch(query) {
+
+    searchModal.classList.remove('hidden');
+    searchResultsList.innerHTML = '<div class="p-4 text-center text-gray-500">Buscando livros...</div>';
+
+    try {
+
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
+        const data = await response.json();
+
+        if (!data.items || data.items.length === 0) {
+            searchResultsList.innerHTML = '<div class="p-4 text-center text-red-500">Nenhum livro encontrado para essa pesquisa.</div>';
+            
+            return;
+        }
+
+        renderGoogleBooksResults(data.items);
+
+    } catch (error) {
+        console.error("Erro ao buscar no Google Books:", error);
+        searchResultsList.innerHTML = '<div class="p-4 text-center text-red-500">Ocorreu um erro ao buscar os livros.</div>';
+    }
+
+
 }
 
 // Filter books from API by their Status
