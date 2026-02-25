@@ -77,8 +77,47 @@ async function doGoogleBooksSearch(query) {
         console.error("Erro ao buscar no Google Books:", error);
         searchResultsList.innerHTML = '<div class="p-4 text-center text-red-500">Ocorreu um erro ao buscar os livros.</div>';
     }
+}
 
+function renderGoogleBooksResults(books) {
 
+    searchResultsList.innerHTML = '';
+
+    books.forEach(book => {
+
+        const info = book.volumeInfo;
+
+        const title = book.title;
+        const authors = info.authors ? info.authors.join(', ') : 'Autor Desconhecido';
+        const thumbnail = info.imageLinks?.thumbnail || 'https://via.placeholder.com/128x192?text=Sem+Capa';
+
+        let isbn = 'SEM_ISBN';
+        if (info.industryIdentifiers) {
+            const identifier = info.industryIdentifiers.find(id => id.type === 'ISBN_13' || id.type === 'ISBN_10');
+
+            if (identifier) isbn = identifier.identifier;
+        }
+
+        const bookHtml = `
+            <div class="flex gap-4 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors items-center">
+                <img src="${thumbnail}" alt="Capa" class="w-16 h-24 object-cover rounded shadow-sm">
+                
+                <div class="flex-grow">
+                    <h3 class="font-semibold text-blue-950 line-clamp-1">${title}</h3>
+                    <p class="text-sm text-gray-500 line-clamp-1">${authors}</p>
+                    <p class="text-xs text-gray-400 mt-1">ISBN: ${isbn}</p>
+                </div>
+                
+                <button 
+                    onclick="prepareToAddBook('${isbn}', '${title.replace(/'/g, "\\'")}', '${authors.replace(/'/g, "\\'")}', '${thumbnail}')" 
+                    class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors text-sm font-medium whitespace-nowrap shadow-sm">
+                    + Estante
+                </button>
+            </div>
+        `;
+
+        searchResultsList.insertAdjacentElement('beforeend', bookHtml);
+    })
 }
 
 // Filter books from API by their Status
