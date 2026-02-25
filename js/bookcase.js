@@ -95,7 +95,7 @@ function renderGoogleBooksResults(books) {
 
         const info = book.volumeInfo;
 
-        const title = book.title;
+        const title = info.title ? String(info.title) : 'Título Desconhecido';
         const authors = info.authors ? info.authors.join(', ') : 'Autor Desconhecido';
         const thumbnail = info.imageLinks?.thumbnail || 'https://via.placeholder.com/128x192?text=Sem+Capa';
 
@@ -105,6 +105,9 @@ function renderGoogleBooksResults(books) {
 
             if (identifier) isbn = identifier.identifier;
         }
+
+        const safeTitle = String(title).replace(/'/g, "\\'");
+        const safeAuthors = String(authors).replace(/'/g, "\\'");
 
         const bookHtml = `
             <div class="flex gap-4 p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors items-center">
@@ -117,14 +120,14 @@ function renderGoogleBooksResults(books) {
                 </div>
                 
                 <button 
-                    onclick="prepareToAddBook('${isbn}', '${title.replace(/'/g, "\\'")}', '${authors.replace(/'/g, "\\'")}', '${thumbnail}')" 
+                    onclick="prepareToAddBook('${isbn}', '${safeTitle}', '${safeAuthors}', '${thumbnail}')" 
                     class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors text-sm font-medium whitespace-nowrap shadow-sm">
                     + Estante
                 </button>
             </div>
         `;
-
-        searchResultsList.insertAdjacentElement('beforeend', bookHtml);
+        
+        searchResultsList.insertAdjacentHTML('beforeend', bookHtml);
     })
 }
 
