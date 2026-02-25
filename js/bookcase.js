@@ -6,6 +6,12 @@ const searchModal = document.getElementById('search-results-modal');
 const searchResultsList = document.getElementById('search-results-list');
 const closeSearchBtn = document.getElementById('btn-close-search');
 
+const addBookModal = document.getElementById('add-book-modal');
+const closeAddModalBtn = document.getElementById('btn-close-add-modal');
+const addBookForm = document.getElementById('add-book-form');
+
+let currentBookToSave = null;
+
 // Search
 
 closeSearchBtn?.addEventListener('click', () => {
@@ -117,19 +123,11 @@ function renderGoogleBooksResults(books) {
                     <p class="text-xs text-gray-400 mt-1">ISBN: ${isbn}</p>
                 </div>
                 
-                <div class="flex flex-col gap-2 items-end">
-                    <select id="status-${googleId}" class="text-xs border border-gray-200 rounded p-1 bg-white text-gray-600 focus:outline-none focus:border-blue-900">
-                        <option value="QUERO_LER">Quero Ler</option>
-                        <option value="LENDO">Lendo</option>
-                        <option value="LIDO">Lido</option>
-                    </select>
-
-                    <button 
-                        onclick="prepareToAddBook('${googleId}', '${isbn}', '${safeTitle}', '${safeAuthors}', '${thumbnail}')" 
-                        class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors text-sm font-medium whitespace-nowrap shadow-sm">
-                        + Estante
-                    </button>
-                </div>
+                <button 
+                    onclick="openAddBookModal('${isbn}', '${safeTitle}', '${safeAuthors}', '${thumbnail}')" 
+                    class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium whitespace-nowrap">
+                    + Estante
+                </button>
             </div>
         `;
 
@@ -137,23 +135,19 @@ function renderGoogleBooksResults(books) {
     });
 }
 
-async function save(googleId, isbn, title, authors, thumbnail) {
+async function openAddBookModal(isbn, title, authors, thumbnail) {
     
-    const statusSelected = document.getElementById(`status-${googleId}`);
-    const status = statusSelected.value;
+    const object = { isbn, title, authors, thumbnail };
 
-    const credential = localStorage.getItem('LibraryCredential');
+    document.getElementById('add-modal-title').innerText = title;
+    document.getElementById('add-modal-author').innerText = authors;
+    document.getElementById('add-modal-cover').src = thumbnail;
 
-    const bookRequest = {
-        isbn: isbn,
-        title: title,
-        authors: authors,
-        thumbnailUrl: thumbnail,
-        status: status,
-        rating: rating
-    }
+    document.getElementById('add-modal-status').value = 'QUERO_LER';
+    
+    updateStarUi(0);
 
-    const book = await fetch
+    addBookModal.classList.remove('hidden');
 }
 
 // Filter books from API by their Status
