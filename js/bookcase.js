@@ -60,10 +60,18 @@ async function doGoogleBooksSearch(query) {
     searchModal.classList.remove('hidden');
     searchResultsList.innerHTML = '<div class="p-4 text-center text-gray-500">Buscando livros...</div>';
 
+    const MY_API_KEY = 'AIzaSyCEEsVW63PLaAqU7BKQxGDrUsL4gw4fP8k';
+
     try {
 
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5&key=${MY_API_KEY}`);
         const data = await response.json();
+
+        if (response.status === 429) {
+            searchResultsList.innerHTML = '<div class="p-4 text-center text-orange-500 font-medium">Você fez muitas buscas seguidas. O Google pediu um tempo! Aguarde um minuto e tente novamente.</div>';
+             
+            return;
+        }
 
         if (!data.items || data.items.length === 0) {
             searchResultsList.innerHTML = '<div class="p-4 text-center text-red-500">Nenhum livro encontrado para essa pesquisa.</div>';

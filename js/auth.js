@@ -180,9 +180,14 @@ async function doRegister(jsonRequest) {
 
 function updateHeader() {
 
-    if (isLoggedIn()) {
+    const isLogged = isLoggedIn();
+    
+    const isDashboardPage = window.location.pathname.includes('bookcase.html');
 
+    if (isLogged && !isDashboardPage) {
         window.location.href = 'bookcase.html';
+    } else if (!isLogged && isDashboardPage) {
+        window.location.href = 'index.html';
     }
 }
 
@@ -226,6 +231,9 @@ function clearErrors(formId) {
 
 function setupInputListeners(formId) {
     const form = document.getElementById(formId);
+
+    if (!form) return;
+
     const inputs = form.querySelectorAll('input');
 
     inputs.forEach(input => {
