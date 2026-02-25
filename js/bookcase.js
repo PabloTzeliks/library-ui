@@ -64,7 +64,7 @@ async function doGoogleBooksSearch(query) {
 
     try {
 
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5&key=${MY_API_KEY}`);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&key=${MY_API_KEY}`);
         const data = await response.json();
 
         if (response.status === 429) {
@@ -88,12 +88,11 @@ async function doGoogleBooksSearch(query) {
 }
 
 function renderGoogleBooksResults(books) {
-
     searchResultsList.innerHTML = '';
 
     books.forEach(book => {
-
         const info = book.volumeInfo;
+        const googleId = book.id;
 
         const title = info.title ? String(info.title) : 'Título Desconhecido';
         const authors = info.authors ? info.authors.join(', ') : 'Autor Desconhecido';
@@ -102,7 +101,6 @@ function renderGoogleBooksResults(books) {
         let isbn = 'SEM_ISBN';
         if (info.industryIdentifiers) {
             const identifier = info.industryIdentifiers.find(id => id.type === 'ISBN_13' || id.type === 'ISBN_10');
-
             if (identifier) isbn = identifier.identifier;
         }
 
@@ -119,16 +117,43 @@ function renderGoogleBooksResults(books) {
                     <p class="text-xs text-gray-400 mt-1">ISBN: ${isbn}</p>
                 </div>
                 
-                <button 
-                    onclick="prepareToAddBook('${isbn}', '${safeTitle}', '${safeAuthors}', '${thumbnail}')" 
-                    class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors text-sm font-medium whitespace-nowrap shadow-sm">
-                    + Estante
-                </button>
+                <div class="flex flex-col gap-2 items-end">
+                    <select id="status-${googleId}" class="text-xs border border-gray-200 rounded p-1 bg-white text-gray-600 focus:outline-none focus:border-blue-900">
+                        <option value="QUERO_LER">Quero Ler</option>
+                        <option value="LENDO">Lendo</option>
+                        <option value="LIDO">Lido</option>
+                    </select>
+
+                    <button 
+                        onclick="prepareToAddBook('${googleId}', '${isbn}', '${safeTitle}', '${safeAuthors}', '${thumbnail}')" 
+                        class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors text-sm font-medium whitespace-nowrap shadow-sm">
+                        + Estante
+                    </button>
+                </div>
             </div>
         `;
-        
+
         searchResultsList.insertAdjacentHTML('beforeend', bookHtml);
-    })
+    });
+}
+
+async function save(googleId, isbn, title, authors, thumbnail) {
+    
+    const statusSelected = document.getElementById(`status-${googleId}`);
+    const status = statusSelected.value;
+
+    const credential = localStorage.getItem('LibraryCredential');
+
+    const bookRequest = {
+        isbn: isbn,
+        title: title,
+        authors: authors,
+        thumbnailUrl: thumbnail,
+        status: status,
+        rating: rating
+    }
+
+    const book = await fetch
 }
 
 // Filter books from API by their Status
