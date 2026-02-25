@@ -10,6 +10,9 @@ const addBookModal = document.getElementById('add-book-modal');
 const closeAddModalBtn = document.getElementById('btn-close-add-modal');
 const addBookForm = document.getElementById('add-book-form');
 
+const stars = document.querySelectorAll('#star-rating i');
+const ratingInput = document.getElementById('add-modal-rating');
+
 let currentBookToSave = null;
 
 // Search
@@ -31,6 +34,13 @@ searchInput?.addEventListener('keypress', async (event) => {
     }
 })
 
+// Book Modal for Putting on Bookcase
+
+closeAddModalBtn?.addEventListener('click', () => {
+    addBookModal.classList.add('hidden');
+    currentBookToSave = null;
+});
+
 // Change Status Type
 
 filterButtons.forEach(btn => {
@@ -44,6 +54,15 @@ filterButtons.forEach(btn => {
         filterBooks(status);
     })
 })
+
+// Put a Rating on a Book
+
+stars.forEach(star => {
+    star.addEventListener('click', (e) => {
+        const ratingValue = e.target.getAttribute('data-value');
+        updateStarUI(ratingValue);
+    });
+});
 
 // Update colors and border of each clicked status section
 
@@ -135,9 +154,11 @@ function renderGoogleBooksResults(books) {
     });
 }
 
-async function openAddBookModal(isbn, title, authors, thumbnail) {
+// Access Book Modal
+
+function openAddBookModal(isbn, title, authors, thumbnail) {
     
-    const object = { isbn, title, authors, thumbnail };
+    currentBookToSave = { isbn, title, authors, thumbnail };
 
     document.getElementById('add-modal-title').innerText = title;
     document.getElementById('add-modal-author').innerText = authors;
@@ -148,6 +169,25 @@ async function openAddBookModal(isbn, title, authors, thumbnail) {
     updateStarUi(0);
 
     addBookModal.classList.remove('hidden');
+}
+
+// Change stars rating of a Book
+
+function updateStarUi(rating) {
+
+    ratingInput = rating.value;
+
+    stars.forEach(star => {
+        const starValue = star.getAttribute('data-value');
+
+        if (starValue <= rating) {
+            star.classList.add('text-yellow-400');
+            star.classList.remove('text-gray-300');
+        } else {
+            star.classList.remove('text-yellow-400');
+            star.classList.add('text-gray-300');
+        }
+    });
 }
 
 // Filter books from API by their Status
