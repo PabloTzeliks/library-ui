@@ -60,9 +60,21 @@ filterButtons.forEach(btn => {
 stars.forEach(star => {
     star.addEventListener('click', (e) => {
         const ratingValue = e.target.getAttribute('data-value');
+
         updateStarUI(ratingValue);
     });
 });
+
+// Saving a Book on Bookcase
+
+addBookForm.addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    if (!currentBookToSave) return;
+
+    const credential = localStorage.getItem('LibraryCredential');
+
+})
 
 // Update colors and border of each clicked status section
 
