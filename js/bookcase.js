@@ -73,8 +73,44 @@ addBookForm.addEventListener('click', async (event) => {
     if (!currentBookToSave) return;
 
     const credential = localStorage.getItem('LibraryCredential');
+    const status = document.getElementById('add-modal-status').value;
+    const rating = parseInt(document.getElementById('add-modal-rating').value);
 
-})
+    const requestPayload = {
+        bookRequest: {
+            isbn: currentBookToSave.isbn,
+            title: currentBookToSave.title,
+            authors: currentBookToSave.authors,
+            thumbnailUrl: currentBookToSave.thumbnail
+        },
+        status: status,
+        rating: rating
+    };
+
+    try {
+        const response = await fetch('http://localhost:8080/books', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authentication': `Basic ${credential}`
+        },
+        body: JSON.stringify(requestPayload)
+    });
+
+    if (response.status === 201) {
+
+        addBookModal.classList.add('hidden');
+        searchModal.classList.add('hidden');
+
+        listBooks();
+    } else {
+
+        alert('Erro ao adicionar o Livro.');
+    }
+    } catch (error) {
+        console.error('Um erro aconteceu ao consultar a API', error);
+    }
+});
 
 // Update colors and border of each clicked status section
 
@@ -156,7 +192,7 @@ function renderGoogleBooksResults(books) {
                 
                 <button 
                     onclick="openAddBookModal('${isbn}', '${safeTitle}', '${safeAuthors}', '${thumbnail}')" 
-                    class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium whitespace-nowrap">
+                    class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium whitespace-nowrap">
                     + Estante
                 </button>
             </div>
