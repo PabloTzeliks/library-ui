@@ -10,7 +10,8 @@ const addBookModal = document.getElementById('add-book-modal');
 const closeAddModalBtn = document.getElementById('btn-close-add-modal');
 const addBookForm = document.getElementById('add-book-form');
 
-const stars = document.querySelectorAll('#star-rating i');
+const starContainer = document.getElementById('star-rating-container');
+const stars = starContainer.querySelectorAll('i');
 const ratingInput = document.getElementById('add-modal-rating');
 
 let currentBookToSave = null;
@@ -59,15 +60,17 @@ filterButtons.forEach(btn => {
 
 stars.forEach(star => {
     star.addEventListener('click', (e) => {
-        const ratingValue = e.target.getAttribute('data-value');
+        const clickedStar = e.currentTarget; 
 
-        updateStarUI(ratingValue);
+        const clickedValue = parseInt(clickedStar.getAttribute('data-value'));
+
+        updateStarUi(clickedValue);
     });
 });
 
 // Saving a Book on Bookcase
 
-addBookForm.addEventListener('click', async (event) => {
+addBookForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     if (!currentBookToSave) return;
@@ -222,17 +225,16 @@ function openAddBookModal(isbn, title, authors, thumbnail) {
 // Change stars rating of a Book
 
 function updateStarUi(rating) {
-
-    ratingInput = rating.value;
+    ratingInput.value = rating;
 
     stars.forEach(star => {
-        const starValue = star.getAttribute('data-value');
+        const starValue = parseInt(star.getAttribute('data-value'));
 
         if (starValue <= rating) {
-            star.classList.add('text-yellow-400');
+            star.classList.add('text-yellow-400', 'ph-fill');
             star.classList.remove('text-gray-300');
         } else {
-            star.classList.remove('text-yellow-400');
+            star.classList.remove('text-yellow-400', 'ph-fill');
             star.classList.add('text-gray-300');
         }
     });
