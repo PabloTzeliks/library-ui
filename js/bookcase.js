@@ -148,7 +148,7 @@ async function doGoogleBooksSearch(query) {
 
     try {
 
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&key=${MY_API_KEY}`);
+        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=20&key=${MY_API_KEY}`);
         const data = await response.json();
 
         if (response.status === 429) {
@@ -311,6 +311,21 @@ function renderBookCase(books) {
     }
 
     const booksHtml = books.map(book => {
+
+        let imageUrl = book.thumbnail_url;
+        
+        if (imageUrl) {
+            
+            if (imageUrl.includes('books.google')) {
+                imageUrl = imageUrl
+                    .replace('zoom=1', 'zoom=0')
+                    .replace('&edge=curl', '')
+                    .replace('http:', 'https:');
+            }
+        } else {
+            imageUrl = `https://placehold.co/400x600/eef2f6/1e3a8a?text=${encodeURIComponent(book.title)}&font=Montserrat`;
+        }
+
         return `
         <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col group cursor-pointer border border-gray-100" data-id="${book.id}">
             <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
@@ -361,7 +376,7 @@ function formatStatusText(status) {
     const statusMap = {
         'READING': 'Lendo',
         'READ': 'Lido',
-        'WANT_TO_READ': 'Quero Ler'
+        'WANT_READ': 'Quero Ler'
     };
     return statusMap[status] || status; 
 }
@@ -370,7 +385,7 @@ function getStatusBgColor(status) {
     const colorMap = {
         'READING': 'bg-blue-900',
         'READ': 'bg-green-600',
-        'WANT_TO_READ': 'bg-orange-500'
+        'WANT_READ': 'bg-orange-500'
     };
     return colorMap[status] || 'bg-gray-500';
 }
