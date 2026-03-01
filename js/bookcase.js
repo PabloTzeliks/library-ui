@@ -13,6 +13,8 @@ const starContainer = document.getElementById('star-rating-container');
 const stars = starContainer.querySelectorAll('i');
 const ratingInput = document.getElementById('add-modal-rating');
 
+const bookcaseGrid = document.getElementById('bookcase-grid');
+
 let currentBookToSave = null;
 let myBookcase = [];
 
@@ -48,11 +50,9 @@ filterButtons.forEach(btn => {
 
     btn.addEventListener('click', (event) => {
         const clickedButton = event.target;
-
         const status = clickedButton.getAttribute('data-status');
 
         updateTabStatus(clickedButton);
-
         filterBooks(status);
     })
 })
@@ -305,5 +305,79 @@ async function filterBooks(status) {
 
 function renderBookCase(books) {
 
+    bookcaseGrid.innerHTML = '';
 
+    if (books === 0) {
+
+        return;
+    }
+
+    const booksHtml = books.map(book => {
+        return `
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col group cursor-pointer border border-gray-100" data-id="${book.id}">
+            <div class="relative aspect-[2/3] overflow-hidden bg-gray-200">
+                <img
+                    src="${book.thumbnail_url || 'https://via.placeholder.com/200x300?text=Sem+Capa'}"
+                    alt="Capa do Livro ${book.title}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <span class="absolute top-2 right-2 ${getStatusBgColor(book.status)} text-white text-xs font-bold px-2 py-1 rounded-md shadow">
+                    ${formatStatusText(book.status)}
+                </span>
+            </div>
+            
+            <div class="p-4 flex flex-col flex-grow">
+                <h3 class="font-semibold text-gray-800 line-clamp-2 leading-tight mb-1" title="${book.title}">
+                    ${book.title}
+                </h3>
+                <p class="text-sm text-gray-500 mb-3 line-clamp-1" title="${book.authors}">
+                    ${book.authors}
+                </p>
+
+                <div class="mt-auto flex text-yellow-400 text-sm">
+                    ${generateStarsHtml(book.rating)}
+                </div>
+            </div>
+        </div>    
+        `;
+    }).join('');
+
+    bookcaseGrid.insertAdjacentHTML('beforeend', booksHtml);
 }
+
+function generateStarsHtml(rating) {
+    let starsHtml = '';
+    const validRating = rating || 0; 
+    
+    for (let i = 1; i <= 5; i++) {
+        if (i <= validRating) {
+            starsHtml += `<i class="ph-fill ph-star"></i>\n`;
+        } else {
+            starsHtml += `<i class="ph ph-star text-gray-300"></i>\n`;
+        }
+    }
+    return starsHtml;
+}
+
+function formatStatusText(status) {
+    const statusMap = {
+        'READING': 'Lendo',
+        'READ': 'Lido',
+        'WANT_TO_READ': 'Quero Ler'
+    };
+    return statusMap[status] || status; 
+}
+
+function getStatusBgColor(status) {
+    const colorMap = {
+        'READING': 'bg-blue-900',
+        'READ': 'bg-green-600',
+        'WANT_TO_READ': 'bg-orange-500'
+    };
+    return colorMap[status] || 'bg-gray-500';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    listBooks();
+})
