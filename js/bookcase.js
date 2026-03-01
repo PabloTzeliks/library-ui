@@ -14,6 +14,7 @@ const stars = starContainer.querySelectorAll('i');
 const ratingInput = document.getElementById('add-modal-rating');
 
 let currentBookToSave = null;
+let myBookcase = [];
 
 // Search
 
@@ -265,9 +266,16 @@ async function listBooks() {
             throw new Error('API não retornou os Livros.');
         }
 
-        const books = await response.json();
+        const bookcase = await response.json();
 
-        filterBooks(books, statusAtual)
+        renderBookCase(bookcase);
+
+        const allButton = document.querySelector('[data-status="ALL"]');
+        if (allButton) {
+            updateTabStatus(allButton);
+        }
+
+
 
     } catch (error) {
 
@@ -276,6 +284,26 @@ async function listBooks() {
     }
 }
 
-async function filterBooks(books, status) {
-    
+async function filterBooks(status) {
+    let filteredBooks = [];
+
+    if (status === 'ALL') {
+
+        filteredBooks = myBookcase;
+    } else {
+
+        let javaStatus = '';
+        if(status === 'LENDO') javaStatus = 'READING';
+        if(status === 'LIDO') javaStatus = 'READ';
+        if(status === 'QUERO_LER') javaStatus = 'WANT_READ';
+
+        filteredBooks = myBookcase.filter(book => book.status === javaStatus);
+    }
+
+    renderBookCase(filteredBooks);
+}
+
+function renderBookCase(books) {
+
+
 }
