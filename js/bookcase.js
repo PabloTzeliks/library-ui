@@ -123,16 +123,16 @@ addBookForm.addEventListener('submit', async (event) => {
 
 // Update colors and border of each clicked status section
 
-function updateTabStatus(activeButton) {
-    
-    filterButtons.forEach(btn => {
+function updateTabStatus(activeButton, filterButtons) {
+    const buttonsToUpdate = filterButtons || document.querySelectorAll('.filter-btn');
 
+    buttonsToUpdate.forEach(btn => {
         btn.classList.remove('text-blue-900', 'border-blue-900');
         btn.classList.add('text-gray-500', 'border-transparent');
-    })
+    });
 
-    activeButton.classList.remove('text-gray-500', 'border-transparent')
-    activeButton.classList.add('text-blue-900', 'border-blue-900')
+    activeButton.classList.remove('text-gray-500', 'border-transparent');
+    activeButton.classList.add('text-blue-900', 'border-blue-900');
 }
 
 // Search books from Google Books API
@@ -266,17 +266,15 @@ async function listBooks() {
             throw new Error('API não retornou os Livros.');
         }
 
-        const bookcase = await response.json();
+        myBookcase = await response.json();
 
-        renderBookCase(bookcase);
+        renderBookCase(myBookcase);
 
         const allButton = document.querySelector('[data-status="ALL"]');
         if (allButton) {
             updateTabStatus(allButton);
         }
-
-
-
+        
     } catch (error) {
 
         alert('Ocorreu um erro ao listar os livros da sua estante.');
@@ -380,4 +378,20 @@ function getStatusBgColor(status) {
 document.addEventListener('DOMContentLoaded', () => {
 
     listBooks();
+
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            const clickedButton = event.currentTarget; 
+            const status = clickedButton.getAttribute('data-status');
+
+            console.log("Filtro clicado:", status); 
+            console.log("Livros na memória antes de filtrar:", myBookcase);
+
+            updateTabStatus(clickedButton, filterButtons); 
+
+            filterBooks(status);
+        });
+    });
 })
