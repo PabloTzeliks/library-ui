@@ -47,7 +47,8 @@ filterButtons.forEach(btn => {
 
     btn.addEventListener('click', (event) => {
         const clickedButton = event.target;
-        const status = clickedButton.dataSet.status;
+
+        const status = clickedButton.getAttribute('data-status');
 
         updateTabStatus(clickedButton);
 
@@ -243,12 +244,38 @@ function updateStarUi(rating) {
     });
 }
 
+
+
 // Filter books from API by their Status
 
-async function filterBooks(status) {
+async function listBooks() {
     
+    try {
+        const credential = localStorage.getItem('LibraryCredential');
+
+        const response = await fetch('http://localhost:8080/books', {
+            method: 'GET',
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization': `Basic ${credential}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('API não retornou os Livros.');
+        }
+
+        const books = await response.json();
+
+        filterBooks(books, statusAtual)
+
+    } catch (error) {
+
+        alert('Ocorreu um erro ao listar os livros da sua estante.');
+        console.error('Erro ao listar os livros. observe: ', error)
+    }
 }
 
-async function listBooks() {
+async function filterBooks(books, status) {
     
 }
